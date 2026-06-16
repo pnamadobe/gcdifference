@@ -1,0 +1,4 @@
+.DS_Store
+__pycache__/
+git-pat.txt
+*.pat
