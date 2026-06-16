@@ -221,11 +221,30 @@ gh api -X POST repos/{owner}/gct-grand-circle-difference/pages \
 
 ---
 
-## Status when this handoff was written
+## Status — COMPLETE (2026-06-16)
 - [x] Confirmed source is SSR Next.js; full HTML obtainable via `curl`.
 - [x] Inventoried assets: 12 CSS, 6 content photos, 4 logo/badge images, fonts in CSS.
-- [x] Wrote the complete build script (above) — **not yet executed.**
-- [ ] Run `build.py`, verify locally, push to GitHub Pages.
+- [x] Wrote the complete build script (above).
+- [x] Ran `build.py`; verified locally; pushed to GitHub Pages.
+
+**Live demo:** <https://pnamadobe.github.io/gcdifference/>
+(repo `pnamadobe/gcdifference`, public, Pages = main / root, built OK.)
+
+### Font fix (important — the original script had a gap)
+The brand UI font **CircularXX** (Regular/Medium/Bold) is referenced in CSS via
+**root-relative `/fonts/CircularXX-*.woff2`** — NOT under `/_next`. The original
+script only localized `/_next/static/media/`, so it silently dropped CircularXX
+and the page fell back to **serif**. Fix: `build.py` step 2 now localizes *any*
+root-relative `url(/...)` ref in the CSS (downloads to `assets/media/`, rewrites
+to `../media/`). The 3 woff2 files now live in `assets/media/` and load 200 on
+the live site. Most other fonts are already inlined as base64 data URIs; the
+only other external face is `icomoon` (icon font, inlined TTF + an .eot).
+Verified live: `document.fonts` shows CircularXX 400/500/700 = `loaded`, and
+`h1`/`body` compute to `CircularXX`.
+
+> Note: `https://picsum.photos/...` appears in one generated Tailwind utility
+> class in the CSS but is **not used** by any element in the HTML — inert, no
+> runtime external call.
 
 Original folder created during investigation: `/Users/pnam/Sandbox/gct-grand-circle-difference/`
 (safe to reuse or recreate elsewhere). The throwaway `curl` dump was at
